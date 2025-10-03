@@ -4,9 +4,6 @@ from airflow.providers.http.operators.http import HttpOperator
 from airflow.operators.python import PythonOperator
 import os, json, pendulum, logging
 import pandas as pd
-from dotenv import load_dotenv
-
-load_dotenv()
 
 logger = logging.getLogger(name='MyLog')
 http_hook = HttpHook(method='GET', http_conn_id='seoul_openapi')
