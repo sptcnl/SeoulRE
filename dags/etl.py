@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.providers.http.hooks.http import HttpHook
-from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.http.operators.http import HttpOperator
 from airflow.operators.python import PythonOperator
 import os, json, pendulum, logging
 import pandas as pd
@@ -12,7 +12,7 @@ logger = logging.getLogger(name='MyLog')
 http_hook = HttpHook(method='GET', http_conn_id='seoul_openapi')
 conn = http_hook.get_connection('seoul_openapi')
 extra = conn.extra_dejson
-API_KEY = os.getenv('SEOUL_DATA_API_KEY')
+API_KEY = extra.get("api_key")
 SERVICE_NAME = "tbLnOpendataRtmsV"
 
 def process_data(ti):
@@ -59,12 +59,12 @@ with DAG(
     tags=['seoul', 'real_estate', 'api']
 ) as dag:
 
-    call_open_api = SimpleHttpOperator(
+    call_open_api = HttpOperator(
         task_id='call_open_api',
         method='GET',
         http_conn_id='seoul_openapi',
         endpoint=f"{API_KEY}/json/{SERVICE_NAME}/1/5/",
-        response_filter=lambda response: response,
+        response_filter=lambda response: response.text,
         log_response=True,
         on_failure_callback=task_failure_alert,
         response_check=lambda response: response.status_code == 200
