@@ -6,5 +6,6 @@
 |---|---|
 | 커넥션 ID | seoul_openapi |
 | 커넥션 유형 | HTTP |
-| 호스트 | http://openapi.seoul.go.kr |
+| 호스트 | openapi.seoul.go.kr |
 | 포트 | 8088 |
+| Extra | {"api_key":"your_api_key"}|
